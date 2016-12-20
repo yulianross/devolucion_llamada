@@ -40,6 +40,7 @@ app.post('/facebook', function(req, res) {
     if (req.isXHubValid()) {
       console.log('request header X-Hub-Signature validated');
       res.send('Verified!\n');
+      console.log(req.body);
     }
   }
   else {
