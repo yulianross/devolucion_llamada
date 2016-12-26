@@ -19,13 +19,13 @@ app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
   console.log(req);
-  res.send(req.param('hub.challenge'));
+  res.send('hola');
 });
 
 app.get(['/facebook', '/instagram'], function(req, res) {
   if (
     req.param('hub.mode') == 'subscribe' &&
-    req.param('hub.verify_token') == '123456') {
+    req.param('hub.verify_token') == 'ddbd71499e5f5b2bab7fa5151744f8ae') {
     res.send(req.param('hub.challenge'));
   } else {
     res.sendStatus(400);
