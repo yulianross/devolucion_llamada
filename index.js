@@ -6,23 +6,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-var bodyParser = require('body-parser');
-var express = require('express');
-var app = express();
-var xhub = require('express-x-hub');
+const bodyParser = require('body-parser');
+const express = require('express');
+const app = express();
+const xhub = require('express-x-hub');
+const io = require('socket.io');
 
 app.set('port', (process.env.PORT || 5000));
-app.listen(app.get('port'));
+//app.listen(app.get('port'));
 
 app.use(xhub({ algorithm: 'sha1', secret: process.env.APP_SECRET }));
 app.use(bodyParser.json());
 
-app.get('/', function(req, res) {
-  console.log(req);
+const ioApp = io.listen(app.listen(app.get('port'), () => {
+  console.log(`app corriendo en el puerto ${app.get('port')}`);
+}));
+
+ioApp.on('connection', (socket) => {
+  console.log(`client is connected`);
+});
+
+app.get('/', (req, res) => {
+  console.log(`cliente conectado`);
+  ioApp.emit('evento', 'mensaje del evento');
   res.send('hola');
 });
 
-app.get(['/facebook', '/instagram'], function(req, res) {
+app.get(['/facebook', '/instagram'], (req, res) => {
   if (
     req.param('hub.mode') == 'subscribe' &&
     req.param('hub.verify_token') == 'ddbd71499e5f5b2bab7fa5151744f8ae') {
@@ -32,7 +42,7 @@ app.get(['/facebook', '/instagram'], function(req, res) {
   }
 });
 
-app.post('/facebook', function(req, res) {
+app.post('/facebook', (req, res) => {
   console.log('Facebook request body:');
 
   if (req.isXHub) {
@@ -41,11 +51,14 @@ app.post('/facebook', function(req, res) {
       console.log('request header X-Hub-Signature validated');
       res.send('Verified!\n');
       console.log(req.body);
+      ioApp.emit('success', 'mensaje del evento');
     }
   }
   else {
     console.log('Warning - request header X-Hub-Signature not present or invalid');
     res.send('Failed to verify!\n');
+
+    ioApp.emit('failed', 'ha fallado');
     // recommend sending 401 status in production for non-validated signatures
     // res.sendStatus(401);
   }
@@ -55,11 +68,9 @@ app.post('/facebook', function(req, res) {
   res.sendStatus(200);
 });
 
-app.post('/instagram', function(req, res) {
+app.post('/instagram', (req, res) => {
   console.log('Instagram request body:');
   console.log(req.body);
   // Process the Instagram updates here
   res.sendStatus(200);
 });
-
-app.listen();

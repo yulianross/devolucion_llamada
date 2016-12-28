@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "devStart": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "aldana",
@@ -12,7 +13,8 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "express-x-hub": "^1.0.4"
+    "express-x-hub": "^1.0.4",
+    "socket.io": "^1.7.2"
   },
   "devDependencies": {
     "nodemon": "^1.11.0"
