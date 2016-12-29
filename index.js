@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 app.get(['/facebook', '/instagram'], (req, res) => {
   if (
     req.param('hub.mode') == 'subscribe' &&
-    req.param('hub.verify_token') == 'ddbd71499e5f5b2bab7fa5151744f8ae') {
+    req.param('hub.verify_token') == 'eb20126eb4d85c04ecfec3a55c5e021c') {
     res.send(req.param('hub.challenge'));
     ioApp.emit('success', '/facebook success');
   } else {
