@@ -16,7 +16,6 @@ module.exports = (app) => {
   });
 
   app.get('/', (req, res) => {
-    res.status(200).send('hola');
     console.log(`cliente conectado`);
     ioApp.emit('evento', 'mensaje del evento');
   });
