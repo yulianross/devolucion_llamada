@@ -25,7 +25,7 @@ module.exports = (app) => {
         TokenSchema.find({notifierId: id}).sort({date: 'desc'}).exec((err, elements) => {
           if (err) throw err;
 
-          if (elements !== null && elements !== undefined && elements !== []) {
+          if (elements !== null && elements !== undefined && elements !== [] && elements[0] && elements[0].notifierId) {
             socket.emit(elements[0].notifierId, elements[0]);
           }
         });
