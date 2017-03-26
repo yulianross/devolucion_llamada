@@ -25,11 +25,8 @@ module.exports = (app) => {
         TokenSchema.find({notifierId: id}).sort({date: 'desc'}).exec((err, elements) => {
           if (err) throw err;
 
-          if (elemets !== null && elements !== undefinded && elements !== []) {
-            const eventNotifier =  JSON.stringify(elements[0].notifierId);
-
-            console.log(elements[0]);
-            socket.emit(eventNotifier, elements[0]);
+          if (elements !== null && elements !== undefined && elements !== []) {
+            socket.emit(elements[0].notifierId, elements[0]);
           }
         });
     });
@@ -53,13 +50,9 @@ module.exports = (app) => {
     TokenSchema.find({id: req.body.entry[0].id}).sort({date: 'desc'}).exec((err, elements) => {
       if (err) throw err;
 
-      if (elemets !== null && elements !== undefinded && elements !== []) {
-        const eventNotifier = JSON.stringify(elements[0].notifierId);
-
-        console.log(elements[0].id);
-        ioApp.emit(eventNotifier, req.body.entry[0]);
+      if (elements !== null && elements !== undefined && elements !== []) {
+        ioApp.emit(elements[0].notifierId, req.body.entry[0]);
       }
-
     });
 
     res.sendStatus(200);
