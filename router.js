@@ -23,14 +23,20 @@ module.exports = (app) => {
         });
         */
         TokenSchema.find({notifierId: id}).sort({date: 'desc'}).exec((err, elements) => {
-          console.log(elements[0]);
-            socket.emit(elements[0].notifierId, elements[0]);
+          if (err) throw err;
+
+          if (elemets !== null && elements !== undefinded && elements !== []) {
+            const eventNotifier =  JSON.stringify(elements[0].notifierId);
+
+            console.log(elements[0]);
+            socket.emit(eventNotifier, elements[0]);
+          }
         });
     });
   });
 
   app.get('/', (req, res) => {
-    console.log(`cliente conectado`);
+    console.log(`lee el GET`);
   });
 
   app.get(['/facebook', '/instagram'], (req, res) => {
@@ -45,8 +51,15 @@ module.exports = (app) => {
 
   app.post('/facebook', (req, res) => {
     TokenSchema.find({id: req.body.entry[0].id}).sort({date: 'desc'}).exec((err, elements) => {
-      console.log(elements[0].id);
-      ioApp.emit(elements[0].notifierId, req.body.entry[0]);
+      if (err) throw err;
+
+      if (elemets !== null && elements !== undefinded && elements !== []) {
+        const eventNotifier = JSON.stringify(elements[0].notifierId);
+
+        console.log(elements[0].id);
+        ioApp.emit(eventNotifier, req.body.entry[0]);
+      }
+
     });
 
     res.sendStatus(200);
