@@ -51,7 +51,7 @@ module.exports = (app) => {
       TokenSchema.find({id: req.body.entry[0].id}).sort({date: 'desc'}).exec((err, elements) => {
         if (err) throw err;
 
-        if (elements !== null && elements !== undefined && elements !== []) {
+        if (elements !== null && elements !== undefined && elements !== [] && elements[0] && elements[0].notifierId) {
           ioApp.emit(elements[0].notifierId, req.body.entry[0]);
         }
       });
