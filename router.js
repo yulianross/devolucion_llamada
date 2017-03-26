@@ -47,13 +47,16 @@ module.exports = (app) => {
   });
 
   app.post('/facebook', (req, res) => {
-    TokenSchema.find({id: req.body.entry[0].id}).sort({date: 'desc'}).exec((err, elements) => {
-      if (err) throw err;
+    if (req && req.body && req.body.entry && req.body.entry[0] && req.body.entry[0].id) {
+      TokenSchema.find({id: req.body.entry[0].id}).sort({date: 'desc'}).exec((err, elements) => {
+        if (err) throw err;
 
-      if (elements !== null && elements !== undefined && elements !== []) {
-        ioApp.emit(elements[0].notifierId, req.body.entry[0]);
-      }
-    });
+        if (elements !== null && elements !== undefined && elements !== []) {
+          ioApp.emit(elements[0].notifierId, req.body.entry[0]);
+        }
+      });
+    }
+
 
     res.sendStatus(200);
   });
