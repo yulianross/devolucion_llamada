@@ -13,11 +13,24 @@ module.exports = (app) => {
 
   ioApp.on('connection', (socket) => {
     console.log(`client is connected`);
+    socket.on('notifier', (id) => {
+      /*
+        TokenSchema.findOne({notifierId: id}, (err, elementFound) => {
+          console.log(elementFound);
+          if (elementFound !== null && elementFound !== undefined) {
+            socket.emit('elementFound', elementFound);
+          }
+        });
+        */
+        TokenSchema.find({notifierId: id}).sort({date: 'desc'}).exec((err, elements) => {
+          console.log(elements[0]);
+            socket.emit(elements[0].notifierId, elements[0]);
+        });
+    });
   });
 
   app.get('/', (req, res) => {
     console.log(`cliente conectado`);
-    ioApp.emit('evento', 'mensaje del evento');
   });
 
   app.get(['/facebook', '/instagram'], (req, res) => {
@@ -25,15 +38,17 @@ module.exports = (app) => {
       req.param('hub.mode') == 'subscribe' &&
       req.param('hub.verify_token') == config.HUB_VERIFY_TOKEN) {
       res.send(req.param('hub.challenge'));
-      ioApp.emit('success', '/facebook success');
     } else {
       res.sendStatus(400);
-      ioApp.emit('failed', '/facebook failed');
     }
   });
 
   app.post('/facebook', (req, res) => {
-    ioApp.emit(req.body.entry[0].id, req.body.entry[0]);
+    TokenSchema.find({id: req.body.entry[0].id}).sort({date: 'desc'}).exec((err, elements) => {
+      console.log(elements[0].id);
+      ioApp.emit(elements[0].notifierId, req.body.entry[0]);
+    });
+
     res.sendStatus(200);
   });
 
@@ -50,19 +65,19 @@ module.exports = (app) => {
 
           const pageInfo = {
             page: req.body.page,
-            pageId: req.body.id,
+            id: req.body.id,
             extendedToken: tokenRes.access_token,
             notifierId: req.body.notifierId
           };
 
           TokenSchema.findOneAndUpdate({ notifierId: req.body.notifierId }, pageInfo, { new: true }, (err, elementFound) => {
-            //console.log(elementFound);
+            console.log(elementFound);
             if (elementFound === null) {
                 // guardar por primera vez
               const tokenSchema = new TokenSchema(pageInfo);
 
               tokenSchema.save((err, pageStored) => {
-              console.log('page stored');
+                console.log('page stored');
               })
             }
           });
