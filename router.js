@@ -52,21 +52,21 @@ module.exports = (app) => {
 
     app.post('/facebook', (req, res) => {
         if (req && req.body && req.body.entry && req.body.entry[0] && req.body.entry[0].id) {
-          console.log(req.body.entry[0]);
+          console.log('respuesta: ', req.body.entry[0]);
             TokenSchema.find({
                 id: req.body.entry[0].id
             }).sort({
                 date: 'desc'
             }).exec((err, elements) => {
                 if (err) throw err;
-                console.log(elements[0]);
+                console.log('elemento encontrado', elements[0]);
                 if (elements !== null && elements !== undefined && elements !== [] && elements[0] && elements[0].notifierId) {
                     const params = {
                         fields: 'country_page_likes'
                     };
                     graph.setAccessToken(elements[0].extendedToken);
                     graph.get(elements[0].id, params, function(err, res) {
-                      console.log(res);
+                      console.log('enviando respuesta', res);
                       ioApp.emit(elements[0].notifierId, res.country_page_likes);
                     });
                 }
