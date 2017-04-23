@@ -11,7 +11,7 @@ module.exports = (app) => {
     }));
 
     ioApp.on('connection', (socket) => {
-        socket.emit('1234', 'holaa');
+        socket.emit('connected', 'holaa');
         console.log(`client is connected`);
         socket.on('notifier', (id) => {
             /*
