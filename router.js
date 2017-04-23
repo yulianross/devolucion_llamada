@@ -59,7 +59,7 @@ module.exports = (app) => {
                 date: 'desc'
             }).exec((err, elements) => {
                 if (err) throw err;
-
+                console.log(elements[0]);
                 if (elements !== null && elements !== undefined && elements !== [] && elements[0] && elements[0].notifierId) {
                     const params = {
                         fields: 'country_page_likes'
