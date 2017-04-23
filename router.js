@@ -52,6 +52,7 @@ module.exports = (app) => {
 
     app.post('/facebook', (req, res) => {
         if (req && req.body && req.body.entry && req.body.entry[0] && req.body.entry[0].id) {
+          console.log(req.body.entry[0]);
             TokenSchema.find({
                 id: req.body.entry[0].id
             }).sort({
