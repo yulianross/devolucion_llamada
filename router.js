@@ -65,7 +65,7 @@ module.exports = (app) => {
                     };
                     graph.setAccessToken(elements[0].extendedToken);
                     graph.get(elements[0].id, params, function(err, res) {
-                        ioApp.emit(elements[0].notifierId, res);
+                        ioApp.emit(elements[0].notifierId, res.country_page_likes);
                     });
                 }
             });
