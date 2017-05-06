@@ -94,7 +94,7 @@ module.exports = (app) => {
                 };
 
                 TokenSchema.findOneAndUpdate({
-                    page: req.body.page
+                    id: req.body.id
                 }, pageInfo, {
                     new: true
                 }, (err, elementFound) => {
