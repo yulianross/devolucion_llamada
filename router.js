@@ -51,7 +51,7 @@ module.exports = (app) => {
     });
 
     app.post('/facebook', (req, res) => {
-        if (req && req.body && req.body.entry && req.body.entry[0] && req.body.entry[0].id) {
+        if (req && req.body && req.body.entry && req.body.entry[0] && req.body.entry[0].id && req.body.entry[0].changes[0].value.item === 'like') {
           console.log('respuesta: ', req.body.entry[0]);
           ioApp.emit('prueba', req.body);
             TokenSchema.find({
@@ -69,6 +69,13 @@ module.exports = (app) => {
                     graph.get(elements[0].id, params, function(err, res) {
                       console.log('enviando respuesta', res);
                       ioApp.emit(elements[0].notifierId, res.country_page_likes);
+                      graph.post('111389066090953' + "/feed?access_token=" + elements[0].extendedToken, {message: 'que pasa'}}, function(err, res) {
+                          // returns the post id
+                          if (err) throw err;
+                    
+                          console.log(res); // { id: xxxxx}
+
+                      });
                     });
                 }
             });
